@@ -14,7 +14,7 @@ Instead, in the `notebooks` folder you can see the Jupyter Notebooks we used. Fi
 
 In addition to the issues caused by the competition host, Codabench, some memes emerged as well. I hope you can sense the frustration we experienced: 
 
-![meme_codabench](memes/coda_meme.gif)  
+![meme_codabench](meme/coda_meme.gif)  
 
 However, our motto is **Never give up**, and that’s exactly what we did. We embraced every tear we shed, right until the very last one. That’s how empires are built.
 
