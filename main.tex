@@ -26,10 +26,10 @@
     
     \begin{center}
         % Select between First and Second
-        {\Large \textbf{AN2DL - First/Second Homework Report}}\\
+        {\Large \textbf{AN2DL - First Homework Report}}\\
         \vspace{2mm}
         % Change with your Team Name
-        {\Large \textbf{Team Name}}\\
+        {\Large \textbf{DeepL}}\\
         \vspace{2mm}
         % Team Members Information
         {\large Name1 Surname1,}
@@ -196,6 +196,32 @@
 
         \begin{itemize}
             \item 
+        \end{itemize}
+
+        \newpage
+
+        \section{Intro}
+    
+        \begin{itemize}
+            \item This project focuses on image classification about blod cells
+            \item goal: create network to recognize blood cells
+            \item approach: understand the dataset and its problems, start with simple models, discover augmentation \& class balance, transfer learning, fine tuning
+        \end{itemize}
+    
+        \section{Problem analysis} 
+    
+        \begin{itemize}
+            \item Dataset characteristics: presenza di ovvi outlier (200 x classe + 200 rick roll classe 5), classi non bilanciate
+            \item Main challenges: lentezza allenamento (mixed precision), problemi di generalizzazione al test set (overfitting), codabench
+            \item Initial assumptions: che il codabench non funzionava; 
+        \end{itemize}
+
+        \section{Method} 
+        \begin{itemize}
+            \item Bilanciamento classic
+            \item augmentation
+            \item modello (VGG)
+            \item fine tuning
         \end{itemize}
 
         \bibliography{references}
