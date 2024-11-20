@@ -14,10 +14,7 @@ Instead, in the `notebooks` folder you can see the Jupyter Notebooks we used. Fi
 
 In addition to the issues caused by the competition host, Codabench, some memes emerged as well. The frustration we experienced is shown here: 
 
-<video width="320" height="240" controls>
-  <source src="meme/gif.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+![meme](meme/loading.gif)
 
 However, our motto is **Never give up**, and that’s exactly what we did. We embraced every tear we shed, right until the very last one. That’s how empires are built.
 
