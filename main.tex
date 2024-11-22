@@ -11,6 +11,7 @@
 \usepackage{booktabs}
 \usepackage{hyperref}
 \usepackage{wrapfig}
+\usepackage{listings}
 
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \usepackage[left=2.00cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
@@ -170,7 +171,7 @@
         \begin{itemize}
             \item \href{https://drive.google.com/drive/folders/1XqCxOkXIFV81NU8IlltS38bM65k9N-bR?usp=sharing}{Google Drive folder}
             \item \href{https://github.com/BonfaTex/DeepL-1}{\LaTeX{} repository}
-            \item A bit of data inspection and noised aumentation
+            \item A bit of data inspection and noised augmentation
         \end{itemize}
 
         \subsection{Lorenzo}
@@ -182,8 +183,47 @@
         \subsection{Michele}
 
         \begin{itemize}
-            \item 
+            \item EffNetV2B0 (same as VGG16)
+            75%
+            \begin{lstlisting}
+            x = tf.keras.applications.efficientnet_v2.preprocess_input(inputs)
+            x = Dense(units=256, name='dense1')(x)
+            x = BatchNormalization(name='batchnorm1')(x)
+            x = Activation('relu', name='HiddenActivation1')(x)
+            x = Dropout(0.3, name='dropout')(x)
+            \end{lstlisting}
+            \item EffNetV2B0 + augmentation + reduceLR + moduleCheckpoint
+            accuracy: 74.28%
+            \begin{lstlisting}
+            augmentation = tf.keras.Sequential([
+                tfkl.RandomFlip("horizontal_and_vertical"),
+                tfkl.RandomTranslation(0.1,0.1),
+                tfkl.RandomRotation(0.1),
+                tfkl.RandomZoom(0.1),
+                tfkl.RandomBrightness(0.5, value_range=(0,1)),
+                tfkl.RandomContrast(0.5),
+            ], name='Augmentation')
+            x = augmentation(inputs)
+            x = tf.keras.applications.efficientnet_v2.preprocess_input(inputs)
+
+            x = Dense(units=256, kernel_regularizer='l2', name='dense1')(x)
+            x = BatchNormalization(name='batchnorm1')(x)
+            x = Activation('relu', name='HiddenActivation1')(x)
+            x = Dropout(0.3, name='dropout')(x)
+
+            x = Dense(units=256, kernel_regularizer='l2', name='dense2')(x)
+            x = BatchNormalization(name='batchnorm2')(x)
+            x = Activation('relu', name='HiddenActivation2')(x)
+            x = Dropout(0.3, name='dropout2')(x)
+            \end{lstlisting}
         \end{itemize}
+        \begin{lstlisting}
+        early_stopping = EarlyStopping(monitor='val_loss', patience=8, restore_best_weights=True, verbose=1)
+        model_checkpoint = ModelCheckpoint('best_model.keras', save_best_only=True, verbose=1)
+        reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=3, verbose=1)
+        
+        callbacks = [early_stopping, model_checkpoint, reduce_lr]
+        \end{lstlisting}
 
         \subsection{Elena}
 
