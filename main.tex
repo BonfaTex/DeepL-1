@@ -10,6 +10,8 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{hyperref}
+\usepackage{wrapfig}
+
 \newcolumntype{Y}{>{\centering\arraybackslash}X}
 \usepackage[left=2.00cm, right=2.00cm, top=2.00cm, bottom=2.00cm]{geometry}
 
@@ -53,28 +55,19 @@
     \end{center}    
     \vspace{5mm}
     
-    \begin{multicols*}{2}
-        \noindent \textit{Note: The following sections represent a suggested structure. Feel free to adapt them to better suit your specific project needs.}
-        
+    \begin{multicols*}{2}        
         \section{Introduction}
-        In this section, you should present your project's context and objectives. You might want to:
-        \begin{itemize}
-            \item Define the problem (\textit{you may use italics to highlight definitions})
-            \item State your goals (\textbf{emphasise key points with bold})
-            \item Outline your approach
-        \end{itemize}
-
-        \noindent For instance, you might write: ``This project focuses on \textit{image classification} using \textbf{deep learning} techniques."
+        The project aims to implement \textit{multi-class image classification} using \textbf{deep learning} techniques for blood cell analysis. This \textit{supervised learning} task requires balancing model complexity to ensure generalization to unseen data while minimizing \textit{overfitting}. The primary \textbf{goal} is to design a solid neural network that classifies blood cells into the correct categories with high accuracy.
+        \\The \textbf{approach} involves dataset analysis to identify potential issues such as class imbalance, image quality, and the need for preprocessing. We then developed simple deep learning models to establish a performance benchmark, which was subsequently refined into more complex models. We applied techniques such as data augmentation, transfer learning, and fine-tuning to improve model accuracy and generalization and to reduce overfitting. By following this approach, we were able to develop a classification model for blood cells.
         
         \section{Problem Analysis}
-        Here you can discuss your initial analysis of the problem. Consider including:
-        \begin{enumerate}
-            \item Dataset characteristics
-            \item Main challenges
-            \item Initial assumptions
-        \end{enumerate}
-
-        \noindent If you need to reference papers, use the citation command: Recent work~\cite{lecun2015deep} suggests..."
+        The \textbf{dataset} consists of  13,759 96x96 RGB images of blood cells, categorized into eight classes: basophils, eosinophils, erythroblasts, immature granulocytes, lymphocytes, monocytes, neutrophils, and platelets. An initial inspection of the dataset revealed the presence of \textit{outliers}, which could skew the learning process. We also noticed some images with grayscale backgrounds, but further analysis through \textit{PCA} based on the Mahalanobis distance \cite{outliers} (normalizing the dataset) showed this pattern did not negatively influence performance. This indicates that the grayscale background images do not impact the model's ability to learn effectively. Furthermore, the dataset exhibits class imbalance, posing additional challenges for training a model that generalizes effectively across all categories. To address this, we balanced the dataset by replicating images in the underrepresented classes and applying data augmentation techniques to create variations of these images (\textit{oversampling})\cite{oversampling}.
+        \\One of the main \textbf{challenges} we encountered was the low training speed, which was solved by implementing mixed precision \cite{mixed-precision}. This technique uses lower precision (16-bit floating point numbers) for computations while retaining single precision (32-bit) for weight updates. Mixed precision accelerated training and reduced energy consumption, all while maintaining a reasonable accuracy level. Additionally, overfitting of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified})\ test data. However, we intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like early stopping and dropout layers to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
+        \\We \textbf{assumed} the dataset to be solid, with minimal labeling error or inconsistencies beyond the identified outliers. Moreover, we hypothesized that a simple baseline model would provide reasonable performance before moving to more complex architectures and that some overfitting was necessary at first, and we would have to address it later. The last assumption we made was that Codabench would not let us down when we needed it to test our finals models...apparently that was a bit too much to ask for.
+        \begin{figure}[H]
+            \centering
+            \includegraphics[width=0.5\linewidth]{Screenshot from 2024-11-21 11-03-01.png}
+        \end{figure}
 
         \section{Method}
         This section should detail your approach. You can use equations to explain your methodology. For example, a simple model representation:
@@ -203,7 +196,7 @@
         \section{Intro}
     
         \begin{itemize}
-            \item This project focuses on image classification about blod cells
+            \item This project focuses on image classification about blood cells
             \item goal: create network to recognize blood cells
             \item approach: understand the dataset and its problems, start with simple models, discover augmentation \& class balance, transfer learning, fine tuning
         \end{itemize}
@@ -220,11 +213,18 @@
         \begin{itemize}
             \item Bilanciamento classic
             \item augmentation
-            \item modello (VGG)
+            \item modello (VGG16)
             \item fine tuning
+        \end{itemize}
+        References:
+        \begin{itemize}
+            \item Use of VGG16 on medical images: \cite{guan2019vgg16}, \cite{acevedo2019bloodcells}
+            \item Balance of classes through replication
+            \item Lecture 5: Facing Overfitting, October 2: "A good practice for designing neural networks: train a model that overfits the data. This ensures the model has enough complexity (e.g. sufficient layers, neurons, and parameters) to solve the problem effectively. At this stage, generalization is not the focus: it's about verifying that the model is capable of fitting the training data. Once overfitting is confirmed, techniques like early stopping and dropout layers are introduced to prevent overfitting and improve generalization to unseen data."
         \end{itemize}
 
         \bibliography{references}
+        
         \bibliographystyle{abbrv}
     
     \end{multicols*}
