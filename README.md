@@ -1,7 +1,5 @@
 # 🧠 DeepL-1
 
-[20/11/'24: ready in a few days]  
-
 Report of the first *Artificial Neural Network and Deep Learning [2024/25]* Homework, by DeepL team.
 
 You can find the `pdf` file in the release section ↗️  
@@ -10,11 +8,20 @@ Instead, in the `notebooks` folder you can see the Jupyter Notebooks we used. Fi
 
 ## DeepL Team Members
 
-## Meme
+- Matteo Bonfadini (me)
+- Lorenzo Cossiga
+- Michele Baggi
+- Eleonora Lippolis
+
+## Memes and Conclusion
 
 In addition to the issues caused by the competition host, Codabench, some memes emerged as well. The frustration we experienced is shown here: 
 
-![meme](meme/loading.gif)
+![meme](meme/loading.gif) ![pablo](meme/pablo.png)
+
+You can find out more memes in the `meme` folder.
+
+---
 
 However, our motto is **Never give up**, and that’s exactly what we did. We embraced every tear we shed, right until the very last one. That’s how empires are built.
 
