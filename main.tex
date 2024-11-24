@@ -140,7 +140,7 @@
 
         \subsection{Overfitting and Assumptions}
         
-        Overfitting of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified}) test data. However, we intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like \textbf{early stopping} and \textbf{dropout layers} to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
+        Overfitting of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified}) test data. We intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like early stopping and dropout layers to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
 
         Finally, we assumed the dataset to be solid, with minimal labeling error or inconsistencies. Moreover, we hypothesized that a simple baseline model would provide reasonable performance before moving to more complex architectures. 
 
@@ -148,7 +148,7 @@
 
         %\begin{figure}[H]
             %\centering
-            %\includegraphics[width=0.3\linewidth]%{meme/Screenshot from 2024-11-21 11-03-01.png}
+            %\includegraphics[width=0.3\linewidth]%{meme/pablo.png}
         %\end{figure}
 
         \section{Method}
@@ -159,21 +159,22 @@
 
         \begin{center}
         \begin{tabular}{c}
-        \hline
+        \toprule
         vgg16\\
         \hline
         Dense(256)\\
         Batch Normalization\\
         Dropout\\
         Dense(8)\\
-        \hline\\
+        \bottomrule
         \end{tabular}
         \end{center}
+
         For EfficientNetV2B0, we used a more complex setup to improve generalization and robustness:
 
         \begin{center}
         \begin{tabular}{c}
-        \hline
+        \toprule
         effNetV2B0\\
         \hline
         Augmentation\\
@@ -184,11 +185,11 @@
         Batch Normalization\\
         Dropout\\
         Dense(8)\\
-        \hline
+        \bottomrule
         \end{tabular}
         \end{center}
         
-        The models were built using the Keras Functional API, linking the input layer to the custom head via the frozen vgg16/effNet feature extractor. The model were later compiled with a loss function (Categorical Cross-Entropy, designed for multi-class classification tasks), and the \textbf{Lion optimizer}. Furthermore, during the training phase, we exploited the callbacks \textbf{early Stopping}, \textbf{reduce learning rate} and \textbf{module checkpoint} to prevent overfitting and adjust the learning rate.
+        The models were built using the Keras Functional API, linking the input layer to the custom head via the frozen vgg16/effNet feature extractor. The model were later compiled with a loss function (Categorical Cross-Entropy, designed for multi-class classification tasks), and the \textbf{Lion optimizer} \cite{lion}. Furthermore, during the training phase, we exploited the callbacks \textbf{early stopping}, \textbf{reduce learning rate} and \textbf{module checkpoint} to prevent overfitting and adjust the learning rate.
 
         \section{Experiments and Results}
         
