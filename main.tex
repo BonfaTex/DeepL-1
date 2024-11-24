@@ -62,11 +62,11 @@
 
         The project aims to implement \textit{multi-class image classification} using \textbf{deep learning} techniques for blood cell analysis. This \textit{supervised learning} task requires balancing model complexity to ensure generalization to unseen data while minimizing \textit{overfitting}. The primary \textbf{goal} is to design a solid neural network that classifies blood cells into the correct categories with high accuracy.
         
-        The \textbf{approach} involves dataset analysis to identify potential issues such as class imbalance, image quality, and the need for preprocessing. We then developed simple deep learning models to establish a performance benchmark, which was subsequently refined into more complex models. We applied techniques such as data augmentation, transfer learning, and fine-tuning to improve model accuracy and generalization and to reduce overfitting. By following this approach, we were able to develop a classification model for blood cells.
+        The \textbf{approach} involves dataset analysis to identify potential issues such as class imbalance, image quality, and the need for preprocessing. We then developed simple deep learning models to establish a performance benchmark, which was subsequently refined into more complex models.
         
         \section{Problem Analysis}
 
-        The \textbf{dataset} consists of 13759 RGB images designed for the classification of different types of blood cells. Each image has size 96x96 pixels and it is labeled with one of eight (from 0 to 7) classes, representing the following blood cell types: basophils (0), eosinophils (1), erythroblasts (2), immature granulocytes (3), lymphocytes (4), monocytes (5), neutrophils (6), and platelets (7). We show in Figure~\ref{fig:dataset} a sample for each class.
+        The dataset consists of \textbf{13759} RGB images designed for the classification of different types of blood cells. Each image has size 96x96 pixels and it is labeled with one of eight (from 0 to 7) classes, representing the following blood cell types: basophils (0), eosinophils (1), erythroblasts (2), immature granulocytes (3), lymphocytes (4), monocytes (5), neutrophils (6), and platelets (7). We show in Figure~\ref{fig:dataset} a sample for each class.
 
         \begin{figure}[H]
             \centering
@@ -79,32 +79,32 @@
 
         \subsection{Phase 1: Data Inspection}
 
-        Firstly, we inspected the dataset and printed its shape, as shown in Table~\ref{tb:class-shape}. Secondly, a deeper inspection revealed the presence of \textit{obvious} outliers, as shown in Figure~\ref{fig:rickroll}, which could skew the learning process: 200 samples of the very same blood cell for each class and 200 rick roll. Therefore we proceed by erasing those images.
+        Firstly, we inspected the dataset and printed its shape. Secondly, a deeper inspection revealed the presence of \textit{obvious} outliers, as shown in Figure~\ref{fig:rickroll}, which could skew the learning process: 200 samples of the very same blood cell for each class and 200 rick roll. Therefore we proceed by erasing those images.
 
         We also noticed some images with grayscale backgrounds, but further analysis through \textit{PCA} based on the Mahalanobis distance \cite{outliers} (normalizing the dataset) showed this pattern did not negatively influence our performance. This indicates that the grayscale background images do not impact the model's ability to learn effectively. 
 
-        \begin{table}[H]
-            \centering
-            \setlength{\tabcolsep}{1pt}
-            \caption{Shape of the dataset.}
-            \begin{tabularx}{\linewidth}{lYY}
-                \toprule
-                & Class & Number of samples \\
-                \midrule
-                & 0 & 1052  \\
-                & 1 & 2381  \\
-                & 2 & 1285  \\
-                & 3 & 2226  \\
-                & 4 & 1049  \\
-                & 5 & 1393  \\
-                & 6 & 2530  \\
-                & 7 & 1843  \\
-                \midrule
-                Total: & \textbf{8}  & \textbf{13759} \\
-                \bottomrule
-            \end{tabularx}
-            \label{tb:class-shape}
-        \end{table}
+        % \begin{table}[H]
+        %     \centering
+        %     \setlength{\tabcolsep}{1pt}
+        %     \caption{Shape of the dataset.}
+        %     \begin{tabularx}{\linewidth}{lYY}
+        %         \toprule
+        %         & Class & Number of samples \\
+        %         \midrule
+        %         & 0 & 1052  \\
+        %         & 1 & 2381  \\
+        %         & 2 & 1285  \\
+        %         & 3 & 2226  \\
+        %         & 4 & 1049  \\
+        %         & 5 & 1393  \\
+        %         & 6 & 2530  \\
+        %         & 7 & 1843  \\
+        %         \midrule
+        %         Total: & \textbf{8}  & \textbf{13759} \\
+        %         \bottomrule
+        %     \end{tabularx}
+        %     \label{tb:class-shape}
+        % \end{table}
 
         \begin{figure}[H]
             \centering
@@ -124,233 +124,112 @@
             \label{fig:imbalance}
         \end{figure} 
 
-        Upon closer inspection, one might observe that the dataset exhibits class imbalance. This problem poses additional challenges for training a model that generalizes effectively across all categories.
+        \noindent Upon closer inspection, one might observe that the dataset exhibits class imbalance. This problem poses additional challenges for training a model that generalizes effectively across all categories.
 
         To address this, after the splitting of the dataset into training, validation and test sets according to an 83:13:4 ratio, we balanced the training one by replicating images in the underrepresented classes. The result is a new training set with 2000 images for each class.
 
+        Throughout the challenge we noticed that the validation accuracy and the (local) test accuracy were almost identical, as a matter of fact in some training session we just split the data 83:17, therefore we are not going to show the test accuracy for the various models as it would be redundant with respect to the validation one.
+
         Finally, we applied \textbf{data augmentation techniques} to create variations of these images (\textit{oversampling}) \cite{oversampling}. In particular, after trials and errors, we decided to use \texttt{AugMix} and \texttt{RandAugment} \cite{aug}.
+
+        
 
         \subsection{Phase 3: Mixed Precision}
 
-        One of the main \textbf{challenges} we encountered was the low training speed, which was solved by implementing mixed precision \cite{mixed-precision}. This technique uses lower precision (16-bit floating point numbers) for computations while retaining single precision (32-bit) for weight updates. Mixed precision accelerated training and reduced energy consumption, all while maintaining a reasonable accuracy level. Additionally, overfitting of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified}) test data. However, we intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like early stopping and dropout layers to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
+        One of the main challenges we encountered was the low training speed, which was solved by implementing mixed precision \cite{mixed-precision}. This technique uses lower precision (16-bit floating point numbers) for computations while retaining single precision (32-bit) for weight updates. Mixed precision accelerated training and reduced energy consumption, all while maintaining a reasonable accuracy level. 
+        
+        Additionally, \textbf{overfitting} of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified}) test data. However, we intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like early stopping and dropout layers to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
 
-        \subsection{Assumptions}
+        Finally, we assumed the dataset to be solid, with minimal labeling error or inconsistencies. Moreover, we hypothesized that a simple baseline model would provide reasonable performance before moving to more complex architectures. 
 
-        We \textbf{assumed} the dataset to be solid, with minimal labeling error or inconsistencies beyond the identified outliers. Moreover, we hypothesized that a simple baseline model would provide reasonable performance before moving to more complex architectures and that some overfitting was necessary at first, and we would have to address it later. 
+        % The last assumption we made was that Codabench would not let us down when we needed it to test our final models ... apparently that was a bit too much to ask for.
 
-        The last assumption we made was that Codabench would not let us down when we needed it to test our final models ... apparently that was a bit too much to ask for.
-
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.3\linewidth]{meme/Screenshot from 2024-11-21 11-03-01.png}
-        \end{figure}
+        %\begin{figure}[H]
+            %\centering
+            %\includegraphics[width=0.3\linewidth]%{meme/Screenshot from 2024-11-21 11-03-01.png}
+        %\end{figure}
 
         \section{Method}
-
-        The task suggests to use Categorical Cross-Entropy as loss function. If $y_{ij}$ is the output probability of class $j$ for observation $i$, then:
-        \begin{equation*}
-        \label{eq:loss}
-        \operatorname{Loss}(y_{\text{pred}},y_{\text{true}}) = - \frac{1}{N} \sum_{i=1}^N \sum_{j=1}^J y_{\text{true},ij} \log(y_{\text{pred},ij})
-        \end{equation*}
-        where $N$ is the number of samples and $J = 12$ is the number of classes.
-
-        As metric we used Accuracy as requested:
-        \begin{equation*}
-        \label{eq:accuracy}
-        \operatorname{Accuracy} = \frac{1}{N} \sum_{i=1}^N \mathds{1}_{[\operatorname{argmax}_j (y_{\text{pred},ij}) = \operatorname{argmax}_j (y_{\text{true},ij})]}
-        \end{equation*}
-
-        In addition, we also considered the F1--score per class to better understand the weaknesses of the model.
+        
+        To tackle the classification task, we employed a \textbf{transfer learning} approach, leveraging pre-trained models as feature extractors. Specifically, we experimented with three different architectures: VGG16, EfficientNetV2B0, and an additional model structurally identical to VGG16.
+        
+        For the VGG16-based model, the architecture consisted of a dense layer with linear transformation, batch normalization to stabilize and accelerate training, ReLU activation to introduce non-linearity, a dropout layer (dropout rate = 0.3) for regularization, and a final dense layer with softmax activation for multi-class classification:
 
         \begin{center}
         \begin{tabular}{c}
         \hline
-        Layer\\
-        Layer\\
-        Dense(128)\\
-        BatchNormalization\\
+        vgg16\\
+        \hline
+        Dense(256)\\
+        Batch Normalization\\
         Dropout\\
+        Dense(8)\\
         \hline
         \end{tabular}
         \end{center}
+        
+        For EfficientNetV2B0, we used a more complex setup to improve generalization and robustness:
 
-        \section{Experiments}
-        For your experiments, you might want to present your results in tables. Here's an example of a wide table comparing different models:
+        \begin{center}
+        \begin{tabular}{c}
+        \hline
+        effNetV2B0\\
+        \hline
+        Augmentation\\
+        Dense(256)\\
+        Batch Normalization\\
+        Dropout\\
+        Dense(256)\\
+        Batch Normalization\\
+        Dropout\\
+        Dense(8)\\
+        \hline
+        \end{tabular}
+        \end{center}
+        
+        The models were built using the Keras Functional API, linking the input layer to the custom head via the frozen vgg16/effNet feature extractor. The model were later compiled with a loss function (Categorical Cross-Entropy, designed for multi-class classification tasks), and the Lion optimizer. Furthermore, during the training phase we exploited the callbacks EarlyStopping, ReduceLR and ModuleCheckpoint to prevent overfitting and adjust the learning rate.
 
-        \begin{table*}[H]
-            \centering
-            \setlength{\tabcolsep}{3pt}
-            \caption{An example of wide table. Best results are highlighted in \textbf{bold}.}
-            \begin{tabularx}{\textwidth}{lYYYc}
-                \toprule
-                Model & Accuracy & Precision & Recall & ROC AUC\\
-                \midrule
-                VGG18         &  72.20 $\pm$ 3.06    &   94.95 $\pm$ 0.52     &   86.95 $\pm$ 0.55    &   80.16 $\pm$ 0.81\\
-                Custom Model        &  27.71 $\pm$ 3.19    &   75.70 $\pm$ 1.07     &   55.75 $\pm$ 2.16    &   36.60 $\pm$ 1.26\\
-                ResNet18    &  \textbf{89.24 $\pm$ 2.38}    &   \textbf{95.54 $\pm$ 0.49}     &   \textbf{93.43 $\pm$ 1.30}    &   \textbf{91.68 $\pm$ 0.71}\\
-                \bottomrule
-            \end{tabularx}
-            \label{tab:Performance}
-        \end{table*}
-
-        \noindent For more specific measurements, you might use a narrower table:
+        \section{Experiments ad Results}
+        
+        Initially, we implemented a simple model based on the CIFAR-10 architecture discussed in class. While it achieved acceptable performance on the validation set, its accuracy on the hidden test set was suboptimal.
+        
+        To address this, we developed a more complex model identical to VGG16 but trained from scratch with randomly initialized weights. Although this approach slightly improved test accuracy, the gains were limited.
+        
+        Subsequently, we shifted to transfer learning, incorporating pre-trained models (VGG16 and EfficientNetV2B0). For VGG16, we added a custom classification head as described earlier and fine-tuned the model. This approach achieved the best test set accuracy of 82\%.
+        
+        In parallel, we experimented with EfficientNetV2B0 in two configurations: a simpler version identical to VGG16's classification head and a more complex version with additional dense and augmentation layers.
+        
+        The results on both validation and hidden test set are shown in Table~\ref{tb:Measurements}. These results emphasize that simplicity, combined with fine-tuning of higher convolutional layers in pre-trained models, can yield better results in our scenario.
     
         \begin{table}[H]
             \centering
             \setlength{\tabcolsep}{3pt}
-            \caption{An example of table. Best results may be highlighted in \textbf{bold}.}
-            \begin{tabularx}{\linewidth}{lY}
+            \caption{Various models accuracy.}
+            \begin{tabularx}{\linewidth}{lYY}
                 \toprule
-                Time [$\mu$s] & Distance [mm]\\
+                Model & Val. Acc. & Hidden Test Acc. \\
                 \midrule
-                22$\pm$4 & 8$\pm$1\\
-                17$\pm$3 & 7$\pm$1\\
-                15$\pm$3 & 6$\pm$1\\
-                13$\pm$2 & 5$\pm$1\\
-                10$\pm$2 & 4$\pm$1\\
-                8$\pm$2 & 3$\pm$1\\
-                5$\pm$1 & 2$\pm$1\\
-                37$\pm$1 & 1$\pm$1\\
+                Cifar10 & 83.24\% & 25\% \\
+                vgg16$_{RI}$ & 82.59\% & 39\%\\
+                vgg16$_{TL}$ & 74.63\% & 49\% \\
+                \textbf{vgg16$_{FT}$} & \textbf{97.13\%} & \textbf{82\%} \\
+                effnet1$_{FT}$ & 98.29\% & 74\% \\
+                effnet2$_{FT}$ & 96.20\% & 75\% \\
                 \bottomrule
             \end{tabularx}
             \label{tb:Measurements}
         \end{table}
 
-        \noindent You can also include figures to visualise your results:
-        \begin{figure}[H]
-            \centering
-            \includegraphics[width=0.75\linewidth]{figures/random.jpeg}
-            \caption{Example figure showing [describe what the figure shows]}
-            \label{fig:results}
-        \end{figure}
-
-        \noindent Reference figures using like:``As shown in Figure~\ref{fig:results}..."
-
-        \section{Results}
-        Present your main findings here. You might want to:
-        \begin{itemize}
-            \item Compare your results with baselines
-            \item Highlight key achievements using \textbf{bold text}
-            \item Explain any unexpected outcomes
-        \end{itemize}
-
-        \section{Discussion}
-        In this section, analyse your results critically. Consider:
-        \begin{itemize}
-            \item Strengths and weaknesses
-            \item Limitations and assumptions
-        \end{itemize}
-
         \section{Conclusions}
-        Summarise your work and discuss potential future directions. This is where you can:
-        \begin{itemize}
-            \item Restate main contributions
-            \item Suggest improvements
-            \item Propose future work
-        \end{itemize}
 
-        \newpage
+        This project aimed to solve a multi-class classification problem with a dataset of blood cell images using transfer learning and fine-tuning with VGG16. The algorithm includes augmentation, regularization, and training techniques, achieving high accuracy in both validation and test datasets, and demonstrating its potential applicability in medical image analysis.
 
-        \section{Logbooks}
-
-        Here we can write our personal logbooks.
-
-        \subsection{Matteo}
-
-        \begin{itemize}
-            \item \href{https://drive.google.com/drive/folders/1XqCxOkXIFV81NU8IlltS38bM65k9N-bR?usp=sharing}{Google Drive folder}
-            \item \href{https://github.com/BonfaTex/DeepL-1}{\LaTeX{} repository}
-            \item A bit of data inspection and noised augmentation
-        \end{itemize}
-
-        \subsection{Lorenzo}
-
-        \begin{itemize}
-            \item 
-        \end{itemize}
-
-        \subsection{Michele}
-
-        \begin{itemize}
-            \item EffNetV2B0 (same as VGG16)
-            75%
-            \begin{lstlisting}
-            x = tf.keras.applications.efficientnet_v2.preprocess_input(inputs)
-            x = Dense(units=256, name='dense1')(x)
-            x = BatchNormalization(name='batchnorm1')(x)
-            x = Activation('relu', name='HiddenActivation1')(x)
-            x = Dropout(0.3, name='dropout')(x)
-            \end{lstlisting}
-            \item EffNetV2B0 + augmentation + reduceLR + moduleCheckpoint
-            accuracy: 74.28%
-            \begin{lstlisting}
-            augmentation = tf.keras.Sequential([
-                tfkl.RandomFlip("horizontal_and_vertical"),
-                tfkl.RandomTranslation(0.1,0.1),
-                tfkl.RandomRotation(0.1),
-                tfkl.RandomZoom(0.1),
-                tfkl.RandomBrightness(0.5, value_range=(0,1)),
-                tfkl.RandomContrast(0.5),
-            ], name='Augmentation')
-            x = augmentation(inputs)
-            x = tf.keras.applications.efficientnet_v2.preprocess_input(inputs)
-
-            x = Dense(units=256, kernel_regularizer='l2', name='dense1')(x)
-            x = BatchNormalization(name='batchnorm1')(x)
-            x = Activation('relu', name='HiddenActivation1')(x)
-            x = Dropout(0.3, name='dropout')(x)
-
-            x = Dense(units=256, kernel_regularizer='l2', name='dense2')(x)
-            x = BatchNormalization(name='batchnorm2')(x)
-            x = Activation('relu', name='HiddenActivation2')(x)
-            x = Dropout(0.3, name='dropout2')(x)
-            \end{lstlisting}
-        \end{itemize}
-        \begin{lstlisting}
-        early_stopping = EarlyStopping(monitor='val_loss', patience=8, restore_best_weights=True, verbose=1)
-        model_checkpoint = ModelCheckpoint('best_model.keras', save_best_only=True, verbose=1)
-        reduce_lr = ReduceLROnPlateau(monitor='val_loss', factor=0.2, patience=3, verbose=1)
         
-        callbacks = [early_stopping, model_checkpoint, reduce_lr]
-        \end{lstlisting}
+        The final VGG16 model achieved high performance on validation and test accuracy, demonstrating the effectiveness of transfer learning and fine-tuning. Leveraging the pre-trained VGG16 model allowed a more effective extraction and use of complex visual features, reducing the need for training from scratch and speeding up convergence. Augmentation and regularization techniques helped mitigate overfitting and improve generalization across all blood cell classes, and the use of mixed precision reduced computational overhead and accelerated training. 
+        
+        Several areas for improvement in our models include addressing some \textbf{weaknesses}, such as the drop in accuracy from validation to test data, that suggests some degree of overfitting, indicating the model could still struggle with generalizing to unseen data. In addition, given the dataset's initial class imbalance, it is possible that certain underrepresented blood cell types experienced lower performance metrics. A further improvement in our algorithm could be adjusting the loss function to prioritize minimizing critical misclassification and using more sophisticated methods for dealing with class imbalance.
 
-        \subsection{Elena}
-
-        \begin{itemize}
-            \item 
-        \end{itemize}
-
-        \newpage
-
-        \section{Intro}
-    
-        \begin{itemize}
-            \item This project focuses on image classification about blood cells
-            \item goal: create network to recognize blood cells
-            \item approach: understand the dataset and its problems, start with simple models, discover augmentation \& class balance, transfer learning, fine tuning
-        \end{itemize}
-    
-        \section{Problem analysis} 
-    
-        \begin{itemize}
-            \item Dataset characteristics: presenza di ovvi outlier (200 x classe + 200 rick roll classe 5), classi non bilanciate
-            \item Main challenges: lentezza allenamento (mixed precision), problemi di generalizzazione al test set (overfitting), codabench
-            \item Initial assumptions: che il codabench non funzionava; 
-        \end{itemize}
-
-        \section{Method} 
-        \begin{itemize}
-            \item Bilanciamento classic
-            \item augmentation
-            \item modello (VGG16)
-            \item fine tuning
-        \end{itemize}
-        References:
-        \begin{itemize}
-            \item Use of VGG16 on medical images: \cite{guan2019vgg16}, \cite{acevedo2019bloodcells}
-            \item Balance of classes through replication
-            \item Lecture 5: Facing Overfitting, October 2: "A good practice for designing neural networks: train a model that overfits the data. This ensures the model has enough complexity (e.g. sufficient layers, neurons, and parameters) to solve the problem effectively. At this stage, generalization is not the focus: it's about verifying that the model is capable of fitting the training data. Once overfitting is confirmed, techniques like early stopping and dropout layers are introduced to prevent overfitting and improve generalization to unseen data."
-        \end{itemize}
+        We have some space here, but how much space? We have some space here, but how much space? We have some space here, but how much space? We have some space here, but how much space?
 
         \bibliography{references}
         
