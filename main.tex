@@ -137,8 +137,10 @@
         \subsection{Phase 3: Mixed Precision}
 
         One of the main challenges we encountered was the low training speed, which was solved by implementing mixed precision \cite{mixed-precision}. This technique uses lower precision (16-bit floating point numbers) for computations while retaining single precision (32-bit) for weight updates. Mixed precision accelerated training and reduced energy consumption, all while maintaining a reasonable accuracy level. 
+
+        \subsection{Overfitting and Assumptions}
         
-        Additionally, \textbf{overfitting} of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified}) test data. However, we intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like early stopping and dropout layers to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
+        Overfitting of the training set reduced the model's ability to perform well on unseen (and possibly \textit{modified}) test data. However, we intentionally allowed initial overfitting assuming that we needed to verify that the model was able to fit the training data before addressing generalization issues, to employ only later techniques like \textbf{early stopping} and \textbf{dropout layers} to mitigate overfitting and enhance performance on unseen data \cite{overfitting}.
 
         Finally, we assumed the dataset to be solid, with minimal labeling error or inconsistencies. Moreover, we hypothesized that a simple baseline model would provide reasonable performance before moving to more complex architectures. 
 
@@ -164,10 +166,9 @@
         Batch Normalization\\
         Dropout\\
         Dense(8)\\
-        \hline
+        \hline\\
         \end{tabular}
         \end{center}
-        
         For EfficientNetV2B0, we used a more complex setup to improve generalization and robustness:
 
         \begin{center}
@@ -187,17 +188,17 @@
         \end{tabular}
         \end{center}
         
-        The models were built using the Keras Functional API, linking the input layer to the custom head via the frozen vgg16/effNet feature extractor. The model were later compiled with a loss function (Categorical Cross-Entropy, designed for multi-class classification tasks), and the Lion optimizer. Furthermore, during the training phase we exploited the callbacks EarlyStopping, ReduceLR and ModuleCheckpoint to prevent overfitting and adjust the learning rate.
+        The models were built using the Keras Functional API, linking the input layer to the custom head via the frozen vgg16/effNet feature extractor. The model were later compiled with a loss function (Categorical Cross-Entropy, designed for multi-class classification tasks), and the \textbf{Lion optimizer}. Furthermore, during the training phase, we exploited the callbacks \textbf{early Stopping}, \textbf{reduce learning rate} and \textbf{module checkpoint} to prevent overfitting and adjust the learning rate.
 
-        \section{Experiments ad Results}
+        \section{Experiments and Results}
         
-        Initially, we implemented a simple model based on the CIFAR-10 architecture discussed in class. While it achieved acceptable performance on the validation set, its accuracy on the hidden test set was suboptimal.
+        Initially, we implemented a simple model based on the CIFAR-10 architecture. While it achieved acceptable performance on the validation set, its accuracy on the hidden test set was suboptimal.
         
         To address this, we developed a more complex model identical to VGG16 but trained from scratch with randomly initialized weights. Although this approach slightly improved test accuracy, the gains were limited.
         
         Subsequently, we shifted to transfer learning, incorporating pre-trained models (VGG16 and EfficientNetV2B0). For VGG16, we added a custom classification head as described earlier and fine-tuned the model. This approach achieved the best test set accuracy of 82\%.
         
-        In parallel, we experimented with EfficientNetV2B0 in two configurations: a simpler version identical to VGG16's classification head and a more complex version with additional dense and augmentation layers.
+        We also experimented with EfficientNetV2B0 with additional dense and augmentation layers.
         
         The results on both validation and hidden test set are shown in Table~\ref{tb:Measurements}. These results emphasize that simplicity, combined with fine-tuning of higher convolutional layers in pre-trained models, can yield better results in our scenario.
     
@@ -213,8 +214,7 @@
                 vgg16$_{RI}$ & 82.59\% & 39\%\\
                 vgg16$_{TL}$ & 74.63\% & 49\% \\
                 \textbf{vgg16$_{FT}$} & \textbf{97.13\%} & \textbf{82\%} \\
-                effnet1$_{FT}$ & 98.29\% & 74\% \\
-                effnet2$_{FT}$ & 96.20\% & 75\% \\
+                effnet$_{FT}$ & 96.20\% & 75\% \\
                 \bottomrule
             \end{tabularx}
             \label{tb:Measurements}
@@ -227,9 +227,9 @@
         
         The final VGG16 model achieved high performance on validation and test accuracy, demonstrating the effectiveness of transfer learning and fine-tuning. Leveraging the pre-trained VGG16 model allowed a more effective extraction and use of complex visual features, reducing the need for training from scratch and speeding up convergence. Augmentation and regularization techniques helped mitigate overfitting and improve generalization across all blood cell classes, and the use of mixed precision reduced computational overhead and accelerated training. 
         
-        Several areas for improvement in our models include addressing some \textbf{weaknesses}, such as the drop in accuracy from validation to test data, that suggests some degree of overfitting, indicating the model could still struggle with generalizing to unseen data. In addition, given the dataset's initial class imbalance, it is possible that certain underrepresented blood cell types experienced lower performance metrics. A further improvement in our algorithm could be adjusting the loss function to prioritize minimizing critical misclassification and using more sophisticated methods for dealing with class imbalance.
+        Several areas for improvement in our models include addressing some \textbf{weaknesses}, such as the drop in accuracy from validation to test data, indicating the model could still struggle with generalizing to unseen data. In addition, given the dataset's initial class imbalance, it is possible that certain underrepresented blood cell types experienced lower performance metrics. A further improvement in our algorithm could be adjusting the loss function to prioritize minimizing critical misclassification and using more sophisticated methods for dealing with class imbalance.
 
-        We have some space here, but how much space? We have some space here, but how much space? We have some space here, but how much space? We have some space here, but how much space?
+        To conclude, even though we did most of work together, we highlight here the main contribution of each team member: Lorenzo and Michele developed the VGG16 and EfficentNet models, while Elena and Matteo dealt with data inspection and augmentation as well as the writing of this report.
 
         \bibliography{references}
         
