@@ -11,7 +11,7 @@ Instead, in the `notebooks` folder you can see the Jupyter Notebooks we used. Fi
 - Matteo Bonfadini (me)
 - Lorenzo Cossiga
 - Michele Baggi
-- Eleonora Lippolis
+- Eleonora Lippolis ([@elenaaaa](https://github.com/elenaaaa))
 
 ## 🚬 Memes and Conclusion
 
